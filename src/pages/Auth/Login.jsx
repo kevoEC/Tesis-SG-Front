@@ -16,12 +16,28 @@ export default function Login() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(true);
+  const [email, setEmail] = useState("");
+  const [contraseña, setContraseña] = useState("");
 
-  const handleLogin = () => {
-    login({ token: "abc123", user: { name: "Kevin" } });
-    notify.success("Bienvenido 👋");
-    navigate("/panel/metricas");
+
+  const handleLogin = async () => {
+    try {
+      if (!email || !contraseña) {
+        notify.error("Por favor ingresa tus credenciales.");
+        return;
+      }
+      if (!/\S+@\S+\.\S+/.test(email)) {
+        notify.error("Por favor ingresa un correo electrónico válido.");
+        return;
+      }      
+      await login(email, contraseña);
+      notify.success("Bienvenido 👋");
+      navigate("/panel/metricas");
+    } catch (err) {
+      notify.error("Error al iniciar sesión", err.message);
+    }
   };
+  
 
   return (
     <div className="min-h-screen bg-pattern flex flex-col items-center justify-center px-4 text-[--color-fg]">
@@ -50,6 +66,8 @@ export default function Login() {
               id="email"
               type="email"
               placeholder="usuario@empresa.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="h-11 text-base bg-[--color-bg] border border-[--color-border]"
             />
           </div>
@@ -64,6 +82,8 @@ export default function Login() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
+                value={contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
                 className="h-11 text-base pr-12 bg-[--color-bg] border border-[--color-border]"
               />
               <button
