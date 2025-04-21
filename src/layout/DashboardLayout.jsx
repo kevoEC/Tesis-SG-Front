@@ -1,9 +1,22 @@
+import { useContext } from "react";
 import Header from "@/components/dashboard/Header";
 import Sidebar from "@/components/dashboard/Sidebar";
 import DashboardFooter from "@/components/dashboard/DashboardFooter";
 import { Outlet } from "react-router-dom";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function DashboardLayout() {
+  const { isLoading } = useContext(AuthContext);
+
+  // ✅ Mientras carga la sesión (permisos, token, etc)
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[--color-bg] text-[--color-fg]">
+        <span className="text-sm text-muted">Cargando sesión...</span>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex bg-[--color-bg] text-[--color-fg]">
       <Sidebar />

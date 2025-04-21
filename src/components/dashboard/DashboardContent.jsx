@@ -1,42 +1,23 @@
 import { useUI } from "@/hooks/useUI";
 import { Suspense, lazy } from "react";
 
-// Auto-importa todos los componentes de páginas
+// Importa todos los componentes válidos
 const modules = import.meta.glob("../../pages/**/*.{jsx,tsx}");
 
-// 🔄 Generar dinámicamente el mapa routeComponents con rutas completas
+// Genera los componentes lazy mapeados
 const routeComponents = {};
 for (const path in modules) {
   const key = path
-    .replace("../../pages/", "")        // "Entidad/Prospectos"
-    .replace(/\.jsx|\.tsx$/, "")       // "Entidad/Prospectos"
-    .toLowerCase();                    // "entidad/prospectos"
+    .replace("../../pages/", "")
+    .replace(/\.jsx|\.tsx$/, "")
+    .toLowerCase();
 
-  routeComponents[`/${key}`] = lazy(modules[path]); // => { "/entidad/prospectos": Component }
+  routeComponents[`/${key}`] = lazy(modules[path]);
 }
-
-// 🧪 Verifica las rutas cargadas
-console.log("🧩 Rutas dinámicas disponibles:", Object.keys(routeComponents));
 
 export default function DashboardContent() {
   const { contentRoute } = useUI();
   const Component = routeComponents[contentRoute];
-
-  console.log("📍 Ruta solicitada:", contentRoute);
-  console.log("🧱 Componente encontrado:", Component);
-
-  // Evitar render infinito si contentRoute no existe
-  if (contentRoute && !Component) {
-    return (
-      <main className="flex-1 overflow-y-auto bg-[--color-bg] p-6 text-[--color-fg] fade-in-up">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="text-center text-red-500">
-            ⚠️ Componente no encontrado para la ruta: <code>{contentRoute}</code>
-          </div>
-        </div>
-      </main>
-    );
-  }
 
   return (
     <main className="flex-1 overflow-y-auto bg-[--color-bg] p-6 text-[--color-fg] fade-in-up">
@@ -46,8 +27,12 @@ export default function DashboardContent() {
             <Component />
           </Suspense>
         ) : (
-          <div className="text-center text-muted">
-            Selecciona una opción del menú.
+          <div className="text-center text-red-500 text-lg font-semibold">
+            ⚠️ Componente no encontrado para la ruta:{" "}
+            <code className="bg-black/10 px-2 py-1 rounded">{contentRoute}</code>
+            <div className="mt-4 text-sm text-zinc-500">
+              Si estás desarrollando esta vista, asegúrate de crear el archivo correspondiente en <code>/pages/</code>
+            </div>
           </div>
         )}
       </div>

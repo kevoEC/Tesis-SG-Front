@@ -1,12 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { currentUser } from "@/data/adminUser";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { AuthContext } from "@/contexts/AuthContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { permisos, isLoading } = useContext(AuthContext);
+
   const [openMenus, setOpenMenus] = useState({});
   const [activePath, setActivePath] = useState(location.pathname);
 
@@ -22,6 +24,9 @@ export default function Sidebar() {
     setActivePath(location.pathname);
   }, [location.pathname]);
 
+  // ⛔ Mientras no cargue el contexto, no renderizamos el sidebar
+  if (isLoading) return null;
+
   return (
     <aside className="w-64 min-w-[16rem] bg-[#2e268e] text-white hidden md:flex flex-col">
       <div className="flex items-center justify-center p-6">
@@ -30,14 +35,14 @@ export default function Sidebar() {
 
       <div className="p-4 overflow-y-auto flex-1">
         <nav className="space-y-2">
-          {currentUser.permisos.map((menu) => {
+          {permisos.map((menu) => {
             const Icon = menu.Icono;
             return (
               <div key={menu.Menu}>
                 <button
                   onClick={() => {
                     if (menu.Submenus) toggleMenu(menu.Menu);
-                    else handleNavigation(menu.Ruta);
+                    else if (menu.Ruta) handleNavigation(menu.Ruta);
                   }}
                   className={cn(
                     "flex items-center justify-between w-full text-left px-4 py-3 rounded-md transition-all duration-200 group",

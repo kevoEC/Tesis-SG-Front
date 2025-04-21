@@ -14,11 +14,15 @@ const DashboardPanel = lazy(() => import("@/pages/Panel/Dashboard")); // Si es n
 const Prospectos = lazy(() => import("@/pages/Entidad/Prospectos/Prospectos"));
 const ProspectoForm = lazy(() => import("@/pages/Entidad/Prospectos/ProspectoForm"));
 const ProspectoDetalle = lazy(() => import("@/pages/Entidad/Prospectos/ProspectoDetalle"));
-const Solicitudes = lazy(() => import("@/pages/Entidad/Solicitudes/Solicitudes"));
-const SolicitudesForm = lazy(() => import("@/pages/Entidad/Solicitudes/SolicitudesForm"));
+const Solicitudes = lazy(() => import("@/pages/Entidad/Solicitudes/SolicitudInversion"));
+const SolicitudesForm = lazy(() => import("@/pages/Entidad/Solicitudes/SolicitudInversionForm"));
 const SolicitudesDetalle = lazy(() => import("@/pages/Entidad/Solicitudes/SolicitudesDetalle"));
-const Agencia = lazy(() => import("@/pages/Catalogo/Agencia"));
-const OrigenPotencial = lazy(() => import("@/pages/Catalogo/OrigenPotencial"));
+const Agencias = lazy(() => import("@/pages/Catalogo/Agencia/Agencia"));
+const AgenciaForm = lazy(() => import("@/pages/Catalogo/Agencia/AgenciaForm"));
+const OrigenClienteForm = lazy(() => import("@/pages/Catalogo/OrigenPotencial/OrigenClienteForm"));
+const OrigenCliente = lazy(() => import("@/pages/Catalogo/OrigenPotencial/OrigenPotencial"));
+const TipoProducto = lazy(() => import("@/pages/Catalogo/ProductoInteres/ProductoInteres"));
+const TipoProductoForm = lazy(() => import("@/pages/Catalogo/ProductoInteres/ProductoInteresForm"));
 const Prioridad = lazy(() => import("@/pages/Catalogo/Prioridad"));
 const ProductoInteres = lazy(() => import("@/pages/Catalogo/ProductoInteres"));
 const TipoActividad = lazy(() => import("@/pages/Catalogo/TipoActividad"));
@@ -59,8 +63,47 @@ export const protectedRoutes = [
   { path: "/settings", element: <Settings /> },
 
   // Catálogo
-  { path: "/catalogo/agencia/vista", element: <Agencia /> },
-  { path: "/catalogo/origenpotencial/vista", element: <OrigenPotencial /> },
+  // Catálogo de agencias
+  {
+    path: "/catalogo/agencia/vista",
+    element: <Agencias />
+  },
+  {
+    path: "/catalogo/agencia/nuevo",
+    element: <AgenciaForm />
+  },
+  {
+    path: "/catalogo/agencia/editar/:id",
+    element: <AgenciaForm />
+  },
+  // Catálogo de origenes potenciales
+  {
+    path: "/catalogo/origenpotencial/vista",
+    element: <OrigenCliente />
+  },
+  {
+    path: "/catalogo/origenpotencial/nuevo",
+    element: <OrigenClienteForm />
+  },
+  {
+    path: "/catalogo/origenpotencial/editar/:id",
+    element: <OrigenClienteForm />
+  },
+  // Catalogo de tipo de producto
+  {
+    path: "/catalogo/productointeres/vista",
+    element: <TipoProducto />
+  },
+
+  {
+    path: "/catalogo/productointeres/nuevo",
+    element: <TipoProductoForm />
+  },
+
+  {
+    path: "/catalogo/productointeres/editar/:id",
+    element: <TipoProductoForm />
+  },
   { path: "/catalogo/prioridad/vista", element: <Prioridad /> },
   { path: "/catalogo/productointeres/vista", element: <ProductoInteres /> },
   { path: "/catalogo/tipoactividad/vista", element: <TipoActividad /> },

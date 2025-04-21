@@ -1,43 +1,51 @@
 import { createContext, useEffect, useState } from "react";
+import { getAgencias } from "@/service/Catalogos/AgenciaService";
+// Aquí también importarás los demás servicios: getTipoIdentificacion, etc.
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const CatalogContext = createContext();
 
-export function CatalogProvider({ children }) {
-  const [catalogs, setCatalogs] = useState({});
-  const [loading, setLoading] = useState(true);
+export const CatalogProvider = ({ children }) => {
+  const [catalogs, setCatalogs] = useState({
+    agencias: [],
+    tipoIdentificaciones: [],
+    origenes: [],
+    productos: [],
+  });
+
+  const loadCatalogs = async () => {
+    try {
+      const [agencias] = await Promise.all([
+        getAgencias(),
+        // Aquí irían otros: getTipoIdentificaciones(), getOrigenes(), getProductos()
+      ]);
+
+      setCatalogs({
+        agencias,
+        tipoIdentificaciones: [
+          { id: 1, nombre: "Cédula" },
+          { id: 2, nombre: "Pasaporte" },
+        ],
+        origenes: [
+          { id: 1, nombre: "Publicidad" },
+          { id: 2, nombre: "Recomendación" },
+        ],
+        productos: [
+          { id: 1, nombre: "Inversión A" },
+          { id: 2, nombre: "Inversión B" },
+        ],
+      });
+    } catch (error) {
+      console.error("Error cargando catálogos:", error);
+    }
+  };
 
   useEffect(() => {
-    async function fetchCatalogs() {
-        try {
-          // Simulación de catálogos mientras no tienes API real
-          const data = {
-            generos: [
-              { id: "M", nombre: "Masculino" },
-              { id: "F", nombre: "Femenino" },
-              { id: "O", nombre: "Otro" },
-            ],
-            nacionalidades: [
-              { id: 1, nombre: "Ecuatoriana" },
-              { id: 2, nombre: "Colombiana" },
-            ]
-          };
-          await new Promise(r => setTimeout(r, 500)); // simula delay
-          setCatalogs(data);
-        } catch (error) {
-          console.error("Error cargando catálogos:", error);
-        } finally {
-          setLoading(false);
-        }
-      }
-      
-
-    fetchCatalogs();
+    loadCatalogs();
   }, []);
 
   return (
-    <CatalogContext.Provider value={{ catalogs, loading }}>
+    <CatalogContext.Provider value={catalogs}>
       {children}
     </CatalogContext.Provider>
   );
-}
+};
