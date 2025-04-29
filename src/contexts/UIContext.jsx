@@ -1,9 +1,15 @@
+<<<<<<< Updated upstream
 // src/contexts/UIContext.jsx
 import { createContext, useState } from "react";
 import { toast } from "sonner";
+=======
+// src/contexts/UIContext.js
+import { createContext } from "react";
+>>>>>>> Stashed changes
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const UIContext = createContext();
+<<<<<<< Updated upstream
 
 export function UIProvider({ children }) {
   const [modalOpen, setModalOpen] = useState(false);
@@ -26,3 +32,5 @@ export function UIProvider({ children }) {
     </UIContext.Provider>
   );
 }
+=======
+>>>>>>> Stashed changes

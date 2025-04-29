@@ -7,7 +7,7 @@ import App from "./App.jsx";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CatalogProvider } from "@/contexts/CatalogContext";
 import { DataProvider } from "@/contexts/DataContext";
-import { UIProvider } from "@/contexts/UIContext";
+import { UIProvider } from "@/contexts/UIProvider";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>

@@ -23,6 +23,7 @@ const Prioridad = lazy(() => import("@/pages/Catalogo/Prioridad"));
 const ProductoInteres = lazy(() => import("@/pages/Catalogo/ProductoInteres"));
 const TipoActividad = lazy(() => import("@/pages/Catalogo/TipoActividad"));
 const TipoIdentificacion = lazy(() => import("@/pages/Catalogo/TipoIdentificacion"));
+const Proyeccion = lazy(() => import("@/pages/Entidad/Proyecciones/ProyeccionNueva"));
 
 
 
@@ -59,8 +60,54 @@ export const protectedRoutes = [
   { path: "/settings", element: <Settings /> },
 
   // Catálogo
+<<<<<<< Updated upstream
   { path: "/catalogo/agencia/vista", element: <Agencia /> },
   { path: "/catalogo/origenpotencial/vista", element: <OrigenPotencial /> },
+=======
+  // Catálogo de agencias
+  {
+    path: "/catalogo/agencia/vista",
+    element: <Agencias />
+  },
+  {
+    path: "/catalogo/agencia/nuevo",
+    element: <AgenciaForm />
+  },
+  {
+    path: "/catalogo/agencia/editar/:id",
+    element: <AgenciaForm />
+  },
+  // Catálogo de origenes potenciales
+  {
+    path: "/catalogo/origenpotencial/vista",
+    element: <OrigenCliente />
+  },
+  {
+    path: "/catalogo/origenpotencial/nuevo",
+    element: <OrigenClienteForm />
+  },
+  {
+    path: "/catalogo/origenpotencial/editar/:id",
+    element: <OrigenClienteForm />
+  },
+  // Catalogo de tipo de producto
+  {
+    path: "/catalogo/productointeres/vista",
+    element: <TipoProducto />
+  },
+
+  {
+    path: "/catalogo/productointeres/nuevo",
+    element: <TipoProductoForm />
+  },
+
+  {
+    path: "/catalogo/productointeres/editar/:id",
+    element: <TipoProductoForm />
+  },
+  //Proyecciones
+  { path: "/solicitudes/editar/:id/proyeccion/nueva", element: <Proyeccion /> },
+>>>>>>> Stashed changes
   { path: "/catalogo/prioridad/vista", element: <Prioridad /> },
   { path: "/catalogo/productointeres/vista", element: <ProductoInteres /> },
   { path: "/catalogo/tipoactividad/vista", element: <TipoActividad /> },
