@@ -108,6 +108,9 @@ export const protectedRoutes = [
   //Proyecciones
   { path: "/solicitudes/editar/:id/proyeccion/nueva", element: <Proyeccion /> },
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
