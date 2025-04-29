@@ -107,6 +107,9 @@ export const protectedRoutes = [
   },
   //Proyecciones
   { path: "/solicitudes/editar/:id/proyeccion/nueva", element: <Proyeccion /> },
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   { path: "/catalogo/prioridad/vista", element: <Prioridad /> },
   { path: "/catalogo/productointeres/vista", element: <ProductoInteres /> },

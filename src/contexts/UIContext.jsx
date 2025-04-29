@@ -1,4 +1,5 @@
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // src/contexts/UIContext.jsx
 import { createContext, useState } from "react";
 import { toast } from "sonner";
@@ -6,9 +7,14 @@ import { toast } from "sonner";
 // src/contexts/UIContext.js
 import { createContext } from "react";
 >>>>>>> Stashed changes
+=======
+// src/contexts/UIContext.js
+import { createContext } from "react";
+>>>>>>> Stashed changes
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const UIContext = createContext();
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 
 export function UIProvider({ children }) {
@@ -32,5 +38,7 @@ export function UIProvider({ children }) {
     </UIContext.Provider>
   );
 }
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
