@@ -1,13 +1,26 @@
-// src/contexts/UIContext.jsx
-import { createContext, useState } from "react";
+
+import { createContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const UIContext = createContext();
 
 export function UIProvider({ children }) {
   const [modalOpen, setModalOpen] = useState(false);
-  
+
+  const initialSolicitud = sessionStorage.getItem("solicitudHabilitada") === "true";
+  console.log("🔁 solicitudHabilitada INIT:", initialSolicitud);
+
+  const [solicitudHabilitada, setSolicitudHabilitada] = useState(initialSolicitud);
+
+  useEffect(() => {
+    console.log("📦 solicitudHabilitada CAMBIO:", solicitudHabilitada);
+    if (solicitudHabilitada) {
+      sessionStorage.setItem("solicitudHabilitada", "true");
+    } else {
+      sessionStorage.removeItem("solicitudHabilitada");
+    }
+  }, [solicitudHabilitada]);
+
   const notify = {
     success: (msg) => toast.success(msg),
     error: (msg) => toast.error(msg),
@@ -19,7 +32,9 @@ export function UIProvider({ children }) {
       value={{
         modalOpen,
         setModalOpen,
-        notify  // NUEVO
+        notify,
+        solicitudHabilitada,
+        setSolicitudHabilitada,
       }}
     >
       {children}

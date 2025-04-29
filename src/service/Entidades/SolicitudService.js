@@ -1,3 +1,4 @@
+
 import { API_BASE_URL } from "@/config";
 
 // 👉 Reutilizamos lógica compartida
@@ -17,7 +18,7 @@ const getAuthHeaders = () => {
   };
 };
 
-// 🟢 GET: Obtener todas las solicitudes
+// Solicitudes CRUD
 export const getSolicitudes = async () => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion`, {
     headers: getAuthHeaders(),
@@ -25,7 +26,6 @@ export const getSolicitudes = async () => {
   return handleResponse(res);
 };
 
-// 🔵 GET: Obtener por ID
 export const getSolicitudById = async (id) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion/${id}`, {
     headers: getAuthHeaders(),
@@ -33,7 +33,6 @@ export const getSolicitudById = async (id) => {
   return handleResponse(res);
 };
 
-// 🟡 POST: Crear nueva
 export const createSolicitud = async (data) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion`, {
     method: "POST",
@@ -43,7 +42,6 @@ export const createSolicitud = async (data) => {
   return handleResponse(res);
 };
 
-// 🟠 PUT: Actualizar
 export const updateSolicitud = async (id, data) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion/${id}`, {
     method: "PUT",
@@ -53,7 +51,6 @@ export const updateSolicitud = async (id, data) => {
   return handleResponse(res);
 };
 
-// 🔴 DELETE: Eliminar
 export const deleteSolicitud = async (id) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion/${id}`, {
     method: "DELETE",
@@ -62,7 +59,6 @@ export const deleteSolicitud = async (id) => {
   return handleResponse(res);
 };
 
-// 🟣 POST: Obtener solicitudes con filtros dinámicos (para VistaEntidad)
 export const getSolicitudesFiltradas = async (filtro) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion/filtradas`, {
     method: "POST",
@@ -72,14 +68,59 @@ export const getSolicitudesFiltradas = async (filtro) => {
   return handleResponse(res);
 };
 
-// 🔵 GET: Obtener solicitudes por ID de prospecto (para detalle)
 export const getSolicitudesByProspectoId = async (idProspecto) => {
   const res = await fetch(`${API_BASE_URL}/SolicitudInversion/prospecto/${idProspecto}`, {
     headers: getAuthHeaders(),
   });
-
-  // Si devuelve 404 (sin solicitudes), no lanza error
   if (res.status === 404) return [];
+  return handleResponse(res);
+};
+
+// 🔍 VALIDACIONES
+
+// 🟢 POST: Validación Equifax
+export const validarEquifax = async (numeroDocumento) => {
+  const res = await fetch(`${API_BASE_URL}/Validacion/equifax`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      tipoDocumento: "C",
+      numeroDocumento: numeroDocumento,
+    }),
+  });
+  return handleResponse(res);
+};
+
+// 🔵 POST: Validación LDS (Listas de control)
+export const validarLDS = async ({
+  identificacion,
+  primerNombre,
+  segundoNombre,
+  primerApellido,
+  segundoApellido,
+}) => {
+  const nombreCompleto = (
+    (primerNombre || "") +
+    " " +
+    (segundoNombre || "") +
+    " " +
+    (primerApellido || "") +
+    " " +
+    (segundoApellido || "")
+  ).trim().toUpperCase();
+
+  const res = await fetch(`${API_BASE_URL}/Validacion/lds`, {
+    method: "POST",
+    headers: getAuthHeaders(),
+    body: JSON.stringify({
+      identificacion,
+      primerNombre,
+      segundoNombre,
+      primerApellido,
+      segundoApellido,
+      nombreCompleto,
+    }),
+  });
 
   return handleResponse(res);
 };

@@ -1,8 +1,11 @@
-// src/components/solicitudes/layout/MenusSolicitud.jsx
 
 import { Button } from "@/components/ui/button";
+import { useUI } from "@/hooks/useUI";
 
 export function SidebarMenu({ seccion, setSeccion }) {
+  const { solicitudHabilitada } = useUI();
+  const habilitado = Boolean(solicitudHabilitada); // validación estricta
+
   const items = [
     { key: "identificacion", label: "Identificación" },
     { key: "proyeccion", label: "Proyección" },
@@ -16,22 +19,28 @@ export function SidebarMenu({ seccion, setSeccion }) {
   ];
 
   return (
-    <div className="w-64 border-r border-gray-200 bg-white p-4">
-      <h2 className="text-sm font-semibold text-gray-600 mb-4">Menú</h2>
+    <div className="w-64 bg-white p-6 shadow-sm rounded-xl border border-gray-100">
+      <h2 className="text-lg font-semibold text-gray-800 mb-4">Formulario</h2>
       <div className="space-y-2">
-        {items.map((item) => (
-          <Button
-            key={item.key}
-            onClick={() => setSeccion(item.key)}
-            className={`w-full justify-start text-sm font-medium rounded-lg px-4 py-2 transition-all ${
-              seccion === item.key
-                ? "bg-blue-600 hover:bg-blue-700 text-white"
-                : "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
-            }`}
-          >
-            {item.label}
-          </Button>
-        ))}
+        {items.map((item) => {
+          const isDisabled = item.key !== "identificacion" && !habilitado;
+          return (
+            <Button
+              key={item.key}
+              onClick={() => !isDisabled && setSeccion(item.key)}
+              disabled={isDisabled}
+              className={`w-full justify-start rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                seccion === item.key
+                  ? "bg-blue-600 text-white shadow"
+                  : isDisabled
+                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                  : "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
+              }`}
+            >
+              {item.label}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
