@@ -17,60 +17,63 @@ const handleResponse = async (res) => {
 };
 
 export const getEntidadFiltrada = async (entidad, filtro, idUsuario) => {
-  const url = `${API_BASE_URL}/${entidad}/filtrados`;
+  if (filtro === "mis") {
+    // 🔁 Si es "mis", POST con filtros dinámicos a /filtradas
+    const url = `${API_BASE_URL}/${entidad}/filtradas`;
+    let payload = {};
 
-  let payload = {};
+    switch (entidad) {
+      case "prospecto":
+        payload = construirPayloadProspecto(filtro, idUsuario);
+        break;
 
-  // 👉 Construimos el payload dinámicamente por entidad y filtro
-  switch (entidad) {
-    case "prospecto":
-      payload = construirPayloadProspecto(filtro, idUsuario);
-      break;
+      case "actividad":
+        payload = {
+          idProspecto: null,
+          estado: null,
+          soloMisRegistros: true,
+          idUsuario,
+          busqueda: null,
+        };
+        break;
 
-    case "actividad":
-      payload = {
-        idProspecto: null,
-        estado: filtro === "activos" ? true : filtro === "inactivos" ? false : null,
-        soloMisRegistros: filtro === "mis",
-        idUsuario: filtro === "mis" ? idUsuario : null,
-        busqueda: null,
-      };
-      break;
+      case "solicitudinversion":
+        payload = {
+          identificacion: "",
+          idTipoSolicitud: 0,
+          idTipoCliente: 0,
+          soloMisRegistros: true,
+          idUsuario,
+          busqueda: "",
+        };
+        break;
 
-    case "solicitudinversion":
-      payload = {
-        identificacion: "",
-        idTipoSolicitud: 0,
-        idTipoCliente: 0,
-        soloMisRegistros: filtro === "mis",
-        idUsuario: filtro === "mis" ? idUsuario : null,
-        busqueda: "",
-      };
-      break;
+      default:
+        throw new Error(`Entidad no soportada: ${entidad}`);
+    }
 
-    default:
-      throw new Error(`Entidad no soportada: ${entidad}`);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(payload),
+    });
+
+    return handleResponse(res);
+  } else {
+    // 🌐 Para "todos", "activos", "inactivos": GET simple a /{entidad}
+    const url = `${API_BASE_URL}/${entidad}`;
+    const res = await fetch(url, {
+      method: "GET",
+      headers: getAuthHeaders(),
+    });
+
+    return handleResponse(res);
   }
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: getAuthHeaders(),
-    body: JSON.stringify(payload),
-  });
-
-  return handleResponse(res);
 };
 
-// 🔧 Función separada para prospectos
+// 🔧 Función separada para construir el payload de prospectos
 function construirPayloadProspecto(filtro, idUsuario) {
   switch (filtro) {
-    case "todos":
-      return {
-        soloMisRegistros: false,
-        idUsuario: null,
-        estado: null,
-        busqueda: null,
-      };
     case "mis":
       return {
         soloMisRegistros: true,
@@ -87,12 +90,17 @@ function construirPayloadProspecto(filtro, idUsuario) {
       };
     case "inactivos":
       return {
-        soloMisRegistros: true,
-        idUsuario,
+        soloMisRegistros: false,
+        idUsuario: null,
         estado: false,
         busqueda: null,
       };
     default:
-      return {};
+      return {
+        soloMisRegistros: false,
+        idUsuario: null,
+        estado: null,
+        busqueda: null,
+      };
   }
 }

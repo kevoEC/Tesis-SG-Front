@@ -13,10 +13,13 @@ export const AuthProvider = ({ children }) => {
     const saved = localStorage.getItem("user");
     if (saved) {
       const parsed = JSON.parse(saved);
+      const permisos = Array.isArray(parsed.permisos) ? parsed.permisos : [];
+
       const dataConIconos = {
         ...parsed,
-        permisos: mapearPermisosConIconos(parsed.permisos),
+        permisos: mapearPermisosConIconos(permisos),
       };
+
       setAuthData(dataConIconos);
     }
     setIsLoading(false);

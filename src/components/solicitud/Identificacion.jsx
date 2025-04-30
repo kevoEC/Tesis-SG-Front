@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -36,10 +35,19 @@ export default function Identificacion() {
     };
   });
 
+  function mapToNumericValues(form) {
+    return {
+      ...form,
+      tipoSolicitud: form.tipoSolicitud === "Nueva" ? 1 : form.tipoSolicitud === "Renovación" ? 2 : 3,
+      tipoCliente: form.tipoCliente === "Natural" ? 1 : 2,
+      tipoDocumento:
+        form.tipoDocumento === "Cédula" ? 1 : form.tipoDocumento === "RUC" ? 2 : 3,
+    };
+  }
+
   const [loadingValidacion, setLoadingValidacion] = useState(false);
   const [bloquearCampos, setBloquearCampos] = useState(form.validar);
 
-  // Aplicar habilitación global SOLO cuando cambia 'continuar'
   useEffect(() => {
     if (form.continuar === "Continuar con la solicitud") {
       console.log("✅ Habilitando solicitud desde useEffect");
@@ -50,12 +58,11 @@ export default function Identificacion() {
     }
   }, [form.continuar]);
 
-  // Guardar estado en sessionStorage SOLO si no está vacío
   useEffect(() => {
     const camposValidos = Object.values(form).some((val) => val !== "" && val !== false);
     if (camposValidos) {
       console.log("💾 Guardando en sessionStorage:", form);
-      sessionStorage.setItem("solicitud", JSON.stringify(form));
+      sessionStorage.setItem("solicitud", JSON.stringify(mapToNumericValues(form)));
     } else {
       console.log("⛔ Ignorando guardado de formulario vacío");
     }
