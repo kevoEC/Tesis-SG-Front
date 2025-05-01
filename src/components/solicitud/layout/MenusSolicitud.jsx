@@ -7,42 +7,40 @@ import {
   updateSolicitud,
 } from "@/service/Entidades/SolicitudService";
 
-export function SidebarMenu({ seccion, setSeccion }) {
-  const { solicitudHabilitada } = useUI();
-  const habilitado = Boolean(solicitudHabilitada); // validación estricta
+// 👉 Paso 1: Importamos desde el archivo central del stepper
+import {
+  SolicitudStepperProvider,
+  useSolicitudStepper,
+  pasosSolicitud,
+} from "@/service/stepper/stepperSolicitud";
 
-  const items = [
-    { key: "identificacion", label: "Identificación" },
-    { key: "proyeccion", label: "Proyección" },
-    { key: "datos", label: "Datos generales" },
-    { key: "actividad", label: "Actividad económica" },
-    { key: "contacto", label: "Contacto y ubicación" },
-    { key: "conyuge", label: "Cónyuge" },
-    { key: "banco", label: "Banco" },
-    { key: "beneficiarios", label: "Beneficiarios" },
-    { key: "finalizacion", label: "Finalización" },
-  ];
+// ✅ Este componente ya no se llama SidebarMenu. Lo dejamos aquí si lo sigues usando.
+export function SidebarMenu() {
+  const { currentStep, goTo } = useSolicitudStepper();
+  const { solicitudHabilitada } = useUI();
 
   return (
     <div className="w-64 bg-white p-6 shadow-sm rounded-xl border border-gray-100">
       <h2 className="text-lg font-semibold text-gray-800 mb-4">Formulario</h2>
       <div className="space-y-2">
-        {items.map((item) => {
-          const isDisabled = item.key !== "identificacion" && !habilitado;
+        {pasosSolicitud.map((step) => {
+          const isDisabled = step.id !== "identificacion" && !solicitudHabilitada;
+          const isActive = step.id === currentStep?.id;
+
           return (
             <Button
-              key={item.key}
-              onClick={() => !isDisabled && setSeccion(item.key)}
+              key={step.id}
+              onClick={() => !isDisabled && goTo(step.id)}
               disabled={isDisabled}
               className={`w-full justify-start rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                seccion === item.key
+                isActive
                   ? "bg-blue-600 text-white shadow"
                   : isDisabled
                   ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                   : "bg-white border border-gray-300 hover:bg-gray-50 text-gray-700"
               }`}
             >
-              {item.label}
+              {step.title}
             </Button>
           );
         })}
@@ -80,7 +78,8 @@ export function TopTabs({ active, onChange }) {
 
     const payload = {
       identificacion: parsed.numeroDocumento,
-      idTipoSolicitud: parsed.tipoSolicitud === "Nueva" ? 1 : parsed.tipoSolicitud === "Renovación" ? 2 : 3,
+      idTipoSolicitud:
+        parsed.tipoSolicitud === "Nueva" ? 1 : parsed.tipoSolicitud === "Renovación" ? 2 : 3,
       idTipoCliente: parsed.tipoCliente === "Natural" ? 1 : 2,
       idUsuarioPropietario: user?.idUsuario,
       jsonDocument: JSON.stringify(parsed),
@@ -102,7 +101,8 @@ export function TopTabs({ active, onChange }) {
 
     const payload = {
       identificacion: parsed.numeroDocumento,
-      idTipoSolicitud: parsed.tipoSolicitud === "Nueva" ? 1 : parsed.tipoSolicitud === "Renovación" ? 2 : 3,
+      idTipoSolicitud:
+        parsed.tipoSolicitud === "Nueva" ? 1 : parsed.tipoSolicitud === "Renovación" ? 2 : 3,
       idTipoCliente: parsed.tipoCliente === "Natural" ? 1 : 2,
       idUsuarioPropietario: user?.idUsuario,
       jsonDocument: JSON.stringify(parsed),

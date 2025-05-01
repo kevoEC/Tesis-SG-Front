@@ -36,6 +36,7 @@ const TipoActividad = lazy(() => import("@/pages/Catalogo/TipoActividad"));
 const TipoIdentificacion = lazy(() => import("@/pages/Catalogo/TipoIdentificacion"));
 
 const Proyeccion = lazy(() => import("@/pages/Entidad/Proyecciones/ProyeccionNueva"));
+const Pruebaflujo = lazy(() => import("@/pages/FlujoSolicitud"));
 
 export const publicRoutes = [
   { path: "/login", element: <LoginRedirect /> },
@@ -44,6 +45,8 @@ export const publicRoutes = [
   { path: "/legal/clausula", element: <Clausula /> },
   { path: "/legal/terminos", element: <Terminos /> },
   { path: "/legal/privacidad", element: <Politica /> },
+  { path: "/prueba", element: <Pruebaflujo /> },
+
 ];
 
 export const protectedRoutes = [
