@@ -1,4 +1,4 @@
-// src/contexts/UIContext.jsx
+
 import { createContext, useState, useEffect } from "react";
 import { toast } from "sonner";
 
@@ -11,6 +11,11 @@ export function UIProvider({ children }) {
   console.log("🔁 solicitudHabilitada INIT:", initialSolicitud);
 
   const [solicitudHabilitada, setSolicitudHabilitada] = useState(initialSolicitud);
+  const [solicitudId, setSolicitudId] = useState(
+    sessionStorage.getItem("solicitudId")
+      ? parseInt(sessionStorage.getItem("solicitudId"))
+      : null
+  );
 
   useEffect(() => {
     console.log("📦 solicitudHabilitada CAMBIO:", solicitudHabilitada);
@@ -20,6 +25,14 @@ export function UIProvider({ children }) {
       sessionStorage.removeItem("solicitudHabilitada");
     }
   }, [solicitudHabilitada]);
+
+  useEffect(() => {
+    if (solicitudId) {
+      sessionStorage.setItem("solicitudId", solicitudId.toString());
+    } else {
+      sessionStorage.removeItem("solicitudId");
+    }
+  }, [solicitudId]);
 
   const notify = {
     success: (msg) => toast.success(msg),
@@ -35,6 +48,8 @@ export function UIProvider({ children }) {
         notify,
         solicitudHabilitada,
         setSolicitudHabilitada,
+        solicitudId,
+        setSolicitudId,
       }}
     >
       {children}
