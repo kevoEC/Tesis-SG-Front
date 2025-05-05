@@ -1,4 +1,4 @@
-import { useSolicitudStepper } from "@/service/stepper/stepperSolicitud";
+import { useStepper } from "@/service/stepper/stepperSolicitud"; // Solo si usas stepper
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -24,30 +24,51 @@ const componentes = {
   finalizacion: <Finalizacion />,
 };
 
-export default function StepperBody() {
-  const {
-    currentStep,
-    beforeNext,
-    beforePrev,
-    isFirst,
-    isLast,
-  } = useSolicitudStepper();
+const validaciones = {
+  identificacion: () => !!JSON.parse(sessionStorage.getItem("solicitud"))?.numeroDocumento,
+  proyeccion: () => !!JSON.parse(sessionStorage.getItem("solicitud"))?.proyeccion,
+  // agrega más si necesitas
+};
 
-  console.log("📍 currentStep:", currentStep);
+export default function StepperBody({ preview = false }) {
+  const stepper = useStepper();
+  const currentStep = stepper?.currentStep;
+  const isPreview = preview || !currentStep;
 
-  if (!currentStep || !currentStep.id) {
-    console.warn("⚠️ currentStep.id no está definido todavía");
+  if (isPreview) {
+    // Renderiza todos los formularios como vista previa
     return (
-      <div className="flex-1 p-6">
-        <Card className="p-6 bg-white border text-gray-400 text-sm">
-          Cargando formulario...
-        </Card>
+      <div className="flex-1 p-6 space-y-6">
+        {Object.entries(componentes).map(([id, Componente]) => (
+          <Card
+            key={id}
+            className="p-6 shadow-md bg-white rounded-2xl border border-gray-200"
+          >
+            <h2 className="text-lg font-semibold text-gray-800 mb-4 capitalize">
+              {id}
+            </h2>
+            {Componente}
+          </Card>
+        ))}
       </div>
     );
   }
 
   const ComponenteActual = componentes[currentStep.id];
-  console.log("🧩 Componente que se va a renderizar:", currentStep.id);
+
+  const handleNext = () => {
+    const validar = validaciones[currentStep.id];
+    const pasoValido = validar ? validar() : true;
+
+    return stepper.beforeNext(() => {
+      if (!pasoValido) {
+        if (window.toast) toast.error("Debes completar este paso antes de continuar");
+        else alert("Debes completar este paso antes de continuar");
+        return false;
+      }
+      return true;
+    });
+  };
 
   return (
     <div className="flex-1 p-6 space-y-6">
@@ -61,18 +82,17 @@ export default function StepperBody() {
 
       <div className="flex justify-between mt-4">
         <Button
-          onClick={() => beforePrev(() => true)}
+          onClick={() => stepper.beforePrev(() => true)}
           variant="outline"
-          disabled={isFirst}
-          className="text-sm px-4 py-2"
+          disabled={stepper.isFirst}
         >
           ← Anterior
         </Button>
 
         <Button
-          onClick={() => beforeNext(() => true)}
-          className="bg-blue-600 text-white hover:bg-blue-700 text-sm px-4 py-2"
-          disabled={isLast}
+          onClick={handleNext}
+          className="bg-blue-600 text-white hover:bg-blue-700"
+          disabled={stepper.isLast}
         >
           Siguiente →
         </Button>
